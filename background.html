@@ -1,0 +1,7 @@
+<html>
+<script>
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+	sendResponse(localStorage['custom_icon_definitions']);
+});
+</script>
+</html>

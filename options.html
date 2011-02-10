@@ -1,0 +1,222 @@
+<html>
+<head>
+<title>Custom Icon | Extension Options</title>
+<style>
+* {
+	margin:0;
+	padding:0;
+}
+p {
+	margin:8px 0;
+}
+html {
+	background-color:white;
+}
+body {	
+	font-family:Helvetica, Arial, sans-serif;
+	font-size:small;
+	margin:24px;
+}
+fieldset, legend {
+	border:1px solid #A9DDDD;
+}
+fieldset {
+	background-color:#F0F9F9;
+	padding:24px;
+	margin:16px 0;
+}
+legend {
+	background-color:white;
+	padding:1px 4px;
+	color:#4E8C8C;
+}
+h1 {
+	height:48px;
+	padding-left:64px;
+	padding-top:16px;
+	margin:0;
+	background-image:url(icon48.png);
+	background-position:left top;
+	background-repeat:no-repeat;
+}
+h3 {
+	margin-top:16px;
+	margin-bottom:8px;
+}
+#status {
+	font-weight:bold;
+	font-size:small;
+	background:#FBFFB8;
+	padding:3px 6px;
+	position:fixed;
+	top:16px;
+	left:50%;
+	width:130px;
+	margin-left:-65px;
+	text-align:center;
+	display:none;
+	border-radius:4px;
+}
+input {
+	width:240px;
+}
+button {
+	margin:8px 0;
+}
+table {
+	border-collapse:collapse;
+}
+tr.taglines th {
+	font-size:x-small;
+	font-weight:normal;
+}
+td, th {
+	padding:1px 3px;
+	padding-right:16px;
+}
+td {
+	font-size:small;
+
+}
+th {
+	font-size:small;
+	text-align:left;
+	background-color:#DEEFEF;
+	padding-top:4px;
+	padding-bottom:4px;
+}
+</style>
+</head>
+<script type="text/javascript">
+var customIcons;
+var ruleCount;
+
+// Saves options to localStorage
+function save_options()
+{
+	// Fetch form values into customIcons and save to localStorage
+	var customIcons = new Array();
+	for (var i=0; i<ruleCount; i++)
+	{
+		customIcons.push(new Array( document.getElementById("pattern"+i).value, document.getElementById("icon"+i).value ));
+	}
+	localStorage["custom_icon_definitions"] = JSON.stringify(customIcons);
+
+	// Update status to let user know options were saved
+	var status = document.getElementById("status");
+	status.innerHTML = "Options Saved.";
+	status.style.display = "block";
+	setTimeout(function() {
+		status.innerHTML = "";
+		status.style.display = "none";
+	}, 2000);
+}
+
+// Restores select box state to saved value from localStorage
+function restore_options()
+{
+	// Get rule array from localStorage
+	var customIconStr = localStorage["custom_icon_definitions"];
+	if (!customIconStr)
+		return;
+	else
+		customIcons = eval('(' + customIconStr + ')');
+	
+	// Clear and rebuild table body
+	var ruleBody = document.getElementById("rules");
+	ruleBody.innerHTML = "";
+	for (var i=0; i<customIcons.length; i++)
+	{
+		var row = ruleBody.insertRow(-1);
+
+		row.insertCell(-1).innerHTML = '<input id="pattern' + i + '" value="' + customIcons[i][0] + '" placeholder="Regex Pattern" />';
+		row.insertCell(-1).innerHTML = '<input id="icon' + i + '" value="' + customIcons[i][1] + '" placeholder="URL of custom icon" />';
+		row.insertCell(-1).innerHTML = '<button onclick="remove_rule(' + i + ');">Remove</button>';
+	}
+	ruleCount = customIcons.length;
+}
+
+// Adds a new rule to the rules table
+function new_rule()
+{
+	var ruleBody = document.getElementById("rules");
+	var row = ruleBody.insertRow(-1);
+
+	row.insertCell(-1).innerHTML = '<input id="pattern' + ruleCount + '" placeholder="Regex Pattern" />';
+	row.insertCell(-1).innerHTML = '<input id="icon' + ruleCount + '" placeholder="URL of custom icon" />';
+	row.insertCell(-1).innerHTML = '<button onclick="remove_rule(' + ruleCount + ');">Remove</button>';
+
+	ruleCount++;
+}
+
+function remove_rule(index)
+{
+	// Bubble up following row values
+	var j;
+	for (var i=index; i<ruleCount-1; i++)
+	{
+		j = i+1;
+		document.getElementById("pattern"+i).value = document.getElementById("pattern"+j).value;
+		document.getElementById("icon"+i).value = document.getElementById("icon"+j).value;
+	}
+
+	ruleCount--;
+	
+	// Remove last row
+	var ruleBody = document.getElementById("rules");
+	ruleBody.removeChild( document.getElementById("pattern"+ruleCount).parentNode.parentNode );
+}
+
+</script>
+
+<body onload="restore_options()">
+
+<h1>Custom Icon Preferences</h1>
+
+<p>Create custom icon rules below to replace the shortcut icons on certain pages.</p>
+<p>If two rules conflict, the one higher in the list is used.</p>
+
+<fieldset>
+	<legend>Tips</legend>
+	<h2>Help with Patterns</h2>
+	<p>When creating a custom icon rule below, you must enter a URL pattern in a special syntax known as a "regular expression" (also known as a "regex").</p>
+	<p>Here are the basics you'll probably want to know:</p>
+	<table>
+		<tr><th>To represent...</th><th>Use this in your RegEx</th>
+		<tr><td>a dot or period</td><td><pre>\.</pre></td></tr>
+		<tr><td>any series of characters (wildcard)</td><td><pre>.*</pre></td></tr>
+	</table>
+	<h3>Examples</h3>
+	<table>
+		<tr><th>URL Pattern</th><th>Description</th>
+		<tr><td><pre>.*blog\.reddit\.com.*</pre></td><td>Any URL containing "blog.reddit.com"</td></tr>
+		<tr><td><pre>http://[w]+\.?google\.com.*</pre></td><td>Any URL beginning with an optional "www." prefix followed by "google.com"</td></tr>
+	</table>
+</fieldset>
+
+<fieldset>
+	<legend>Custom Icon Rules</legend>
+	<table>
+		<thead>
+			<tr>
+				<th>URL Pattern</th>
+				<th>Custom Icon Path</th>
+				<th></th>
+			</tr>
+			<tr class="taglines">
+				<th>(A regular expression matching the URLs you want to customize)</th>
+				<th>(Either the path to an image on the Web or a local file:// path.)</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody id="rules">
+		</tbody>
+	</table>
+	<button onclick="new_rule();">Add custom icon rule</button>
+</fieldset>
+
+<button onclick="save_options()">Save Preferences</button>
+<div id="status"></div>
+
+</body>
+</html>
