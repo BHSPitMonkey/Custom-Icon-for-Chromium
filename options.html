@@ -13,9 +13,23 @@ html {
 	background-color:white;
 }
 body {	
-	font-family:Helvetica, Arial, sans-serif;
+	font-family:Arial, sans-serif;
 	font-size:small;
-	margin:24px;
+}
+header {
+	background:#f1f1f1;
+	border-bottom:1px solid #C1CCD6;
+	padding-top:10px;
+	-webkit-box-shadow:rgb(215, 215, 215) 0px 0px 5px 0px;
+}
+content {
+	display:block;
+	padding:24px;
+}
+pagecolumn {
+	display:block;
+	margin:0 auto;
+	width:750px;
 }
 fieldset, legend {
 	border:1px solid #A9DDDD;
@@ -32,61 +46,137 @@ legend {
 }
 h1 {
 	height:48px;
+	font-size:23px;
+	font-weight:normal;
 	padding-left:64px;
-	padding-top:16px;
-	margin:0;
+	padding-top:12px;
 	background-image:url(icon48.png);
 	background-position:left top;
 	background-repeat:no-repeat;
 }
+h2 {
+	border-bottom:1px solid #ccc;
+	font-size:23px;
+	font-weight:normal;
+	margin-top:32px;
+	margin-bottom:16px;
+	padding-bottom:8px;
+}
+h2:first-child {
+	margin-top:0;
+}
 h3 {
 	margin-top:16px;
 	margin-bottom:8px;
+}
+input {
+	width:260px;
+	-webkit-appearance: none;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.296875) 0px 1px 2px 0px inset;
+	-webkit-rtl-ordering: logical;
+	-webkit-user-select: text;
+	background-color: white;
+	border:1px solid #4D90FE;
+	display: inline-block;
+	font-family: Arial;
+	font-size: 13px;
+	padding-bottom: 4px;
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-top: 4px;
+	position: static;
+}
+button {
+	-webkit-user-select: none;
+	background-color: whiteSmoke;
+	background-image: -webkit-linear-gradient(top, rgb(245, 245, 245), rgb(241, 241, 241));
+	border:1px solid #4D90FE;
+	border-radius: 2px;
+	color: #444;
+	cursor: default;
+	display: inline-block;
+	font-family: arial, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	height: 27px;
+	line-height: 27px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 16px;
+	margin-top: 0px;
+	min-width: 54px;
+	padding-bottom: 0px;
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-top: 0px;
+	text-align: center;
+	text-shadow: rgba(0, 0, 0, 0.0976562) 0px 1px 0px;
+	visibility: visible;
+}
+button.add {
+	background-color: #3D9400;
+	background-image: -webkit-linear-gradient(top, rgb(61, 148, 0), rgb(57, 138, 0));
+	border-color:#29691D;
+	color:white;
+}
+button.remove {
+	background-color: #D14836;
+	background-image: -webkit-linear-gradient(top, rgb(221, 75, 57), rgb(209, 72, 54));
+	border-color: #992A1B;
+	color:white;
+}
+button.save {
+	background-color:#4D90FE;
+	background-image: -webkit-linear-gradient(top, rgb(77, 144, 254), rgb(71, 135, 237));
+	border-color:#3079ED;
+	color:white;
+}
+table {
+	margin-top:12px;
+	margin-bottom:12px;
+	border-collapse:collapse;
+}
+.helptable {
+	/*margin-left:auto;
+	margin-right:auto;*/
+	margin-left:16px;
+}
+td, th {
+	padding:1px 3px;
+	padding-right:32px;
+}
+td {
+	font-size:small;
+}
+th {
+	font-size:small;
+	text-align:left;
+	background:#f1f1f1;
+	border-bottom:1px solid black;
+	padding:6px 12px;
+}
+tr.taglines th {
+	background:transparent;
+	color:#444;
+	font-size:x-small;
+	font-weight:normal;
+	border-bottom-color:#ccc;
+}
+tr.rule td {
+	border-bottom:1px solid #ccc;
+	padding:6px 12px;
 }
 #status {
 	font-weight:bold;
 	font-size:small;
 	background:#FBFFB8;
 	padding:3px 6px;
-	position:fixed;
-	top:16px;
-	left:50%;
 	width:130px;
-	margin-left:-65px;
 	text-align:center;
 	display:none;
 	border-radius:4px;
 }
-input {
-	width:240px;
-}
-button {
-	margin:8px 0;
-}
-table {
-	border-collapse:collapse;
-}
-tr.taglines th {
-	font-size:x-small;
-	font-weight:normal;
-}
-td, th {
-	padding:1px 3px;
-	padding-right:16px;
-}
-td {
-	font-size:small;
-
-}
-th {
-	font-size:small;
-	text-align:left;
-	background-color:#DEEFEF;
-	padding-top:4px;
-	padding-bottom:4px;
-}
 </style>
-</head>
 <script type="text/javascript">
 var customIcons;
 var ruleCount;
@@ -105,11 +195,25 @@ function save_options()
 	// Update status to let user know options were saved
 	var status = document.getElementById("status");
 	status.innerHTML = "Options Saved.";
-	status.style.display = "block";
+	status.style.display = "inline";
 	setTimeout(function() {
 		status.innerHTML = "";
 		status.style.display = "none";
 	}, 2000);
+}
+
+// Adds a new rule to the rules table
+function new_rule()
+{
+	var ruleBody = document.getElementById("rules");
+	var row = ruleBody.insertRow(-1);
+	row.className = "rule";
+
+	row.insertCell(-1).innerHTML = '<input id="pattern' + ruleCount + '" placeholder="Regex Pattern" />';
+	row.insertCell(-1).innerHTML = '<input id="icon' + ruleCount + '" placeholder="URL of custom icon" />';
+	row.insertCell(-1).innerHTML = '<button class="remove" onclick="remove_rule(' + ruleCount + ');">Remove</button>';
+
+	ruleCount++;
 }
 
 // Restores select box state to saved value from localStorage
@@ -128,25 +232,17 @@ function restore_options()
 	for (var i=0; i<customIcons.length; i++)
 	{
 		var row = ruleBody.insertRow(-1);
+		row.className = "rule";
 
 		row.insertCell(-1).innerHTML = '<input id="pattern' + i + '" value="' + customIcons[i][0] + '" placeholder="Regex Pattern" />';
 		row.insertCell(-1).innerHTML = '<input id="icon' + i + '" value="' + customIcons[i][1] + '" placeholder="URL of custom icon" />';
-		row.insertCell(-1).innerHTML = '<button onclick="remove_rule(' + i + ');">Remove</button>';
+		row.insertCell(-1).innerHTML = '<button class="remove" onclick="remove_rule(' + i + ');">Remove</button>';
 	}
 	ruleCount = customIcons.length;
-}
-
-// Adds a new rule to the rules table
-function new_rule()
-{
-	var ruleBody = document.getElementById("rules");
-	var row = ruleBody.insertRow(-1);
-
-	row.insertCell(-1).innerHTML = '<input id="pattern' + ruleCount + '" placeholder="Regex Pattern" />';
-	row.insertCell(-1).innerHTML = '<input id="icon' + ruleCount + '" placeholder="URL of custom icon" />';
-	row.insertCell(-1).innerHTML = '<button onclick="remove_rule(' + ruleCount + ');">Remove</button>';
-
-	ruleCount++;
+	
+	// If no rows are initially in the table, add a blank one
+	if (ruleCount == 0)
+		new_rule();
 }
 
 function remove_rule(index)
@@ -167,56 +263,63 @@ function remove_rule(index)
 	ruleBody.removeChild( document.getElementById("pattern"+ruleCount).parentNode.parentNode );
 }
 
-</script>
+</script></head>
 
 <body onload="restore_options()">
+	<header>
+		<pagecolumn>
+			<h1>Custom Icon preferences</h1>
+		</pagecolumn>
+	</header>
+	<content>
+		<pagecolumn>
+			<h2>Tips</h2>
 
-<h1>Custom Icon Preferences</h1>
+				<h3>Help with Patterns</h3>
+				<p>When creating a custom icon rule below, you must enter a URL pattern in a special syntax known as a "regular expression" (also known as a "regex").</p>
+				<p>Here are the basics you'll probably want to know:</p>
+				<table class="helptable">
+					<tbody><tr><th>To represent...</th><th>Use this in your RegEx</th>
+					</tr><tr><td>a dot or period</td><td><pre>\.</pre></td></tr>
+					<tr><td>any series of characters (wildcard)</td><td><pre>.*</pre></td></tr>
+				</tbody></table>
+				<h3>Examples</h3>
+				<table class="helptable">
+					<tbody><tr><th>URL Pattern</th><th>Description</th>
+					</tr><tr><td><pre>.*blog\.reddit\.com.*</pre></td><td>Any URL containing "blog.reddit.com"</td></tr>
+					<tr><td><pre>http://[w]+\.?google\.com.*</pre></td><td>Any URL beginning with an optional "www." prefix followed by "google.com"</td></tr>
+				</tbody></table>
 
-<p>Create custom icon rules below to replace the shortcut icons on certain pages.</p>
-<p>If two rules conflict, the one higher in the list is used.</p>
-
-<fieldset>
-	<legend>Tips</legend>
-	<h2>Help with Patterns</h2>
-	<p>When creating a custom icon rule below, you must enter a URL pattern in a special syntax known as a "regular expression" (also known as a "regex").</p>
-	<p>Here are the basics you'll probably want to know:</p>
-	<table>
-		<tr><th>To represent...</th><th>Use this in your RegEx</th>
-		<tr><td>a dot or period</td><td><pre>\.</pre></td></tr>
-		<tr><td>any series of characters (wildcard)</td><td><pre>.*</pre></td></tr>
-	</table>
-	<h3>Examples</h3>
-	<table>
-		<tr><th>URL Pattern</th><th>Description</th>
-		<tr><td><pre>.*blog\.reddit\.com.*</pre></td><td>Any URL containing "blog.reddit.com"</td></tr>
-		<tr><td><pre>http://[w]+\.?google\.com.*</pre></td><td>Any URL beginning with an optional "www." prefix followed by "google.com"</td></tr>
-	</table>
-</fieldset>
-
-<fieldset>
-	<legend>Custom Icon Rules</legend>
-	<table>
-		<thead>
-			<tr>
-				<th>URL Pattern</th>
-				<th>Custom Icon Path</th>
-				<th></th>
-			</tr>
-			<tr class="taglines">
-				<th>(A regular expression matching the URLs you want to customize)</th>
-				<th>(Either the path to an image on the Web or a local file:// path.)</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody id="rules">
-		</tbody>
-	</table>
-	<button onclick="new_rule();">Add custom icon rule</button>
-</fieldset>
-
-<button onclick="save_options()">Save Preferences</button>
-<div id="status"></div>
-
+			<h2>Custom icon rules</h2>
+			
+			<p>Create custom icon rules below to replace the shortcut icons on certain pages.</p>
+			<p>If two rules conflict, the one higher in the list is used.</p>
+	
+			<table>
+				<thead>
+					<tr>
+						<th>URL Pattern</th>
+						<th>Custom Icon Path</th>
+						<th></th>
+					</tr>
+					<tr class="taglines">
+						<th>(A regular expression matching the URLs you want to customize)</th>
+						<th>(Either the path to an image on the Web or a local file:// path.)</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="rules">
+				</tbody>
+			</table>
+			<button class="add" onclick="new_rule();">Add custom icon rule</button>
+			<button class="save" onclick="save_options()">Save Preferences</button>
+			<div id="status"></div>
+			
+			<h2>About this extension</h2>
+			<a href="https://chrome.google.com/webstore/detail/gfniomcoligcaneiogfbebhihcfkpgdg" target="_blank">
+				<button>Rate and share this extension in the Chrome Web Store</button>
+			</a>
+		</pagecolumn>
+	</content>
 </body>
 </html>

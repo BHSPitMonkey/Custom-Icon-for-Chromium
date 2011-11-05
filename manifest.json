@@ -1,6 +1,6 @@
 {
 	"name": "Custom Icon",
-	"version": "1.0.1",
+	"version": "1.1",
 	"description": "Customize the tab icon for certain sites or pages.",
 	"icons": {
 		"16":	"icon16.png",
